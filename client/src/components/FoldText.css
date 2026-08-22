@@ -1,0 +1,15 @@
+/* Syntha Airlabs motion primitive: ivory-and-gold editorial folds with an accessible static reading fallback. */
+.fold-text { display:inline-block; color:var(--fold-text-color,currentColor); font-size:var(--fold-text-font-size,inherit); font-weight:var(--fold-text-font-weight,inherit); line-height:inherit; letter-spacing:inherit; white-space:pre-wrap; }
+.fold-text__sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+.fold-text__visual { display:inline; }
+.fold-text__line { display:block; }
+.fold-text__whitespace { display:inline; }
+.fold-text__segment { display:inline-block; line-height:inherit; perspective:var(--fold-perspective,700px); transform-style:preserve-3d; vertical-align:baseline; }
+.fold-text__segment[data-fold-split="line"] { display:block; }
+.fold-text__piece { position:relative; display:inline-block; color:inherit; line-height:inherit; transform-style:preserve-3d; backface-visibility:hidden; will-change:transform,opacity; }
+.fold-text__piece::after { position:absolute; inset:-.08em -.02em; content:""; pointer-events:none; opacity:var(--fold-crease,0); mix-blend-mode:multiply; border-radius:.08em; }
+.fold-text__piece[data-fold-hinge="top"]::after { background:linear-gradient(180deg,rgb(0 0 0 / 56%) 0%,rgb(0 0 0 / 20%) 42%,rgb(255 255 255 / 22%) 100%); }
+.fold-text__piece[data-fold-hinge="bottom"]::after { background:linear-gradient(0deg,rgb(0 0 0 / 56%) 0%,rgb(0 0 0 / 20%) 42%,rgb(255 255 255 / 22%) 100%); }
+.fold-text__piece[data-fold-hinge="left"]::after { background:linear-gradient(90deg,rgb(0 0 0 / 56%) 0%,rgb(0 0 0 / 20%) 42%,rgb(255 255 255 / 22%) 100%); }
+.fold-text__piece[data-fold-hinge="right"]::after { background:linear-gradient(270deg,rgb(0 0 0 / 56%) 0%,rgb(0 0 0 / 20%) 42%,rgb(255 255 255 / 22%) 100%); }
+@media (prefers-reduced-motion: reduce) { .fold-text__piece { transform:none !important; } .fold-text__piece::after { opacity:0 !important; } }
