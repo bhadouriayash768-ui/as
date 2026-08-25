@@ -8,8 +8,8 @@ export type SeoMeta = {
 };
 
 const homeMeta: SeoMeta = {
-  title: "HVAC CRM & Workflow Automation Software | Syntha Airlabs",
-  description: "Syntha Airlabs helps HVAC contractors manage leads, customers, scheduling, and follow-up in one clearer workflow. Book a demo today.",
+  title: "Website Design for Growing Businesses | Syntha Airlabs",
+  description: "Syntha Airlabs designs clear, high-performing business websites and landing pages that help growing businesses build trust and make the next step easier.",
   path: "/",
 };
 
@@ -18,12 +18,12 @@ export function getSeo(pathname: string): SeoMeta {
   if (path === "/") return homeMeta;
   const landing = landingPages.find((page) => page.path === path);
   if (landing) return { title: `${landing.title.replace(/\.$/, "")} | Syntha Airlabs`, description: landing.description, path };
-  if (path === "/pricing") return { title: "HVAC CRM Pricing & Plans | Syntha Airlabs", description: "Explore a practical way to bring HVAC CRM, scheduling, and lead workflows into one system. Talk with Syntha Airlabs about the right plan.", path };
-  if (path === "/faq") return { title: "HVAC CRM Software FAQs | Syntha Airlabs", description: "Find answers about Syntha Airlabs HVAC CRM software, scheduling workflows, lead management, onboarding, and who the platform is for.", path };
-  if (path === "/blog") return { title: "HVAC Business Resources & Insights | Syntha Airlabs", description: "Practical CRM, scheduling, lead management, and operations guidance for HVAC business owners and service teams.", path };
+  if (path === "/pricing") return { title: "Website Design Services & Project Fit | Syntha Airlabs", description: "Understand how Syntha Airlabs approaches website design, landing pages, project fit, and the next step for a growing business.", path };
+  if (path === "/faq") return { title: "Business Website Design FAQs | Syntha Airlabs", description: "Find practical answers about business website design, landing pages, existing-site improvements, project fit, and getting started with Syntha Airlabs.", path };
+  if (path === "/blog") return { title: "Website Design & Lead Generation Resources | Syntha Airlabs", description: "Practical guidance on business websites, digital presence, landing pages, and clearer paths from visitor to enquiry.", path };
   const post = blogPosts.find((item) => path === `/blog/${item.slug}`);
   if (post) return { title: `${post.title} | Syntha Airlabs`, description: post.description, path };
-  if (path === "/contact") return { title: "Book an HVAC CRM Conversation | Syntha Airlabs", description: "Tell Syntha Airlabs how your HVAC business handles leads, customers, and scheduling, and discover a clearer workflow.", path };
+  if (path === "/contact") return { title: "Start a Website Project | Syntha Airlabs", description: "Tell Syntha Airlabs what you are building, what feels unclear, and what kind of website or landing page would make the next step easier.", path };
   return { title: "Page Not Found | Syntha Airlabs", description: "The requested Syntha Airlabs page could not be found.", path, noindex: true };
 }
 
@@ -33,21 +33,32 @@ export function getJsonLd(pathname: string): object[] {
   if (path === "/") {
     results.push({
       "@context": "https://schema.org",
-      "@type": "Organization",
+      "@type": "ProfessionalService",
       name: SITE.name,
       url: SITE.origin,
       email: SITE.email,
       description: SITE.description,
+      serviceType: ["Business website design", "Website design services", "Landing page design services"],
+      knowsAbout: ["Business website design", "Conversion-focused landing pages", "Digital presence", "Lead generation websites"],
     });
     results.push({
       "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
+      "@type": "WebSite",
       name: SITE.name,
-      applicationCategory: "BusinessApplication",
-      operatingSystem: "Web",
       url: SITE.origin,
       description: SITE.description,
-      audience: { "@type": "BusinessAudience", audienceType: "HVAC contractors" },
+    });
+  }
+  const landing = landingPages.find((page) => page.path === path);
+  if (landing) {
+    results.push({
+      "@context": "https://schema.org",
+      "@type": "Service",
+      name: landing.title,
+      serviceType: landing.eyebrow,
+      description: landing.description,
+      provider: { "@type": "Organization", name: SITE.name, url: SITE.origin },
+      url: `${SITE.origin}${path}`,
     });
   }
   if (path === "/faq") {
