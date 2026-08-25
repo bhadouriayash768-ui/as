@@ -1,6 +1,6 @@
 /** Luminous Systems Atelier: pearl space, charcoal editorial contrast, Aurelis Gold depth, and calm pointer-responsive layers. */
-import { CSSProperties, useEffect, useMemo, useRef } from "react";
-import "./DepthText.css";
+import React, { CSSProperties, useEffect, useMemo, useRef } from "react";
+if (typeof window !== "undefined") void import("./DepthText.css");
 
 const MAX_LAYERS = 64;
 

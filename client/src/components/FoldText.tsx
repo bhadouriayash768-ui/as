@@ -2,12 +2,8 @@
  * Syntha Airlabs motion primitive: an editorial, scroll-triggered type fold
  * that preserves readable final text and honors reduced-motion preferences.
  */
-import { useEffect, useMemo, useRef, type CSSProperties, type ReactNode } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import "./FoldText.css";
-
-gsap.registerPlugin(ScrollTrigger);
+import React, { useEffect, useMemo, useRef, type CSSProperties, type ReactNode } from "react";
+if (typeof window !== "undefined") void import("./FoldText.css");
 
 type Hinge = "top" | "bottom" | "left" | "right";
 type SplitBy = "char" | "word" | "line";
@@ -83,45 +79,58 @@ export default function FoldText({
 
   useEffect(() => {
     const root = rootRef.current;
-    if (!root) return undefined;
+    if (!root || typeof window === "undefined") return undefined;
     const pieces = Array.from(root.querySelectorAll<HTMLElement>(".fold-text__piece"));
     if (!pieces.length) return undefined;
+    let disposed = false;
+    let cleanup: (() => void) | undefined;
 
-    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (media.matches) {
-      gsap.set(pieces, { opacity: 1, rotateX: 0, rotateY: 0, clearProps: "transform" });
-      return undefined;
-    }
-
-    const from = { opacity: 0, rotateX: hingeConfig.rotateX, rotateY: hingeConfig.rotateY, "--fold-crease": safeCrease, transformOrigin: hingeConfig.origin };
-    const to = { opacity: 1, rotateX: 0, rotateY: 0, "--fold-crease": 0, duration, ease, stagger, clearProps: "willChange" };
-    const context = gsap.context(() => {
-      if (trigger === "hover") {
-        gsap.set(pieces, { opacity: 1, rotateX: 0, rotateY: 0, "--fold-crease": 0 });
-        const replay = () => gsap.fromTo(pieces, from, to);
-        root.addEventListener("mouseenter", replay);
-        return () => root.removeEventListener("mouseenter", replay);
+    void Promise.all([import("gsap"), import("gsap/ScrollTrigger")]).then(([gsapModule, triggerModule]) => {
+      if (disposed) return;
+      const gsap = gsapModule.gsap ?? gsapModule.default;
+      const ScrollTrigger = triggerModule.ScrollTrigger ?? triggerModule.default;
+      gsap.registerPlugin(ScrollTrigger);
+      const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+      if (media.matches) {
+        gsap.set(pieces, { opacity: 1, rotateX: 0, rotateY: 0, clearProps: "transform" });
+        return;
       }
 
-      if (trigger === "scroll") {
-        let hasPlayed = false;
-        const scrollTrigger = ScrollTrigger.create({
-          trigger: root,
-          start: "top 82%",
-          once: true,
-          onEnter: () => {
-            if (hasPlayed) return;
-            hasPlayed = true;
-            gsap.fromTo(pieces, from, to);
-          },
-        });
-        return () => scrollTrigger.kill();
-      }
+      const from = { opacity: 0, rotateX: hingeConfig.rotateX, rotateY: hingeConfig.rotateY, "--fold-crease": safeCrease, transformOrigin: hingeConfig.origin };
+      const to = { opacity: 1, rotateX: 0, rotateY: 0, "--fold-crease": 0, duration, ease, stagger, clearProps: "willChange" };
+      const context = gsap.context(() => {
+        if (trigger === "hover") {
+          gsap.set(pieces, { opacity: 1, rotateX: 0, rotateY: 0, "--fold-crease": 0 });
+          const replay = () => gsap.fromTo(pieces, from, to);
+          root.addEventListener("mouseenter", replay);
+          return () => root.removeEventListener("mouseenter", replay);
+        }
 
-      gsap.fromTo(pieces, from, to);
-      return undefined;
-    }, root);
-    return () => context.revert();
+        if (trigger === "scroll") {
+          let hasPlayed = false;
+          const scrollTrigger = ScrollTrigger.create({
+            trigger: root,
+            start: "top 82%",
+            once: true,
+            onEnter: () => {
+              if (hasPlayed) return;
+              hasPlayed = true;
+              gsap.fromTo(pieces, from, to);
+            },
+          });
+          return () => scrollTrigger.kill();
+        }
+
+        gsap.fromTo(pieces, from, to);
+        return undefined;
+      }, root);
+      cleanup = () => context.revert();
+    }).catch(() => undefined);
+
+    return () => {
+      disposed = true;
+      cleanup?.();
+    };
   }, [duration, ease, hingeConfig.origin, hingeConfig.rotateX, hingeConfig.rotateY, safeCrease, stagger, trigger]);
 
   const rootStyle = {

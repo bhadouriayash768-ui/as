@@ -2,12 +2,8 @@
  * Syntha Airlabs motion primitive: a character rise that follows scroll progress
  * forward and backward, scoped to its own root and safely cleaned up.
  */
-import { useEffect, useMemo, useRef, type ElementType } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import "./ScrollFloat.css";
-
-gsap.registerPlugin(ScrollTrigger);
+import React, { useEffect, useMemo, useRef, type ElementType } from "react";
+if (typeof window !== "undefined") void import("./ScrollFloat.css");
 
 type ScrollFloatProps = {
   children: string;
@@ -37,36 +33,50 @@ export default function ScrollFloat({
 
   useEffect(() => {
     const root = rootRef.current;
-    if (!root) return undefined;
+    if (!root || typeof window === "undefined") return undefined;
     const chars = Array.from(root.querySelectorAll<HTMLElement>(".scroll-float__char"));
     if (!chars.length) return undefined;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      gsap.set(chars, { opacity: 1, yPercent: 0, scaleX: 1, scaleY: 1, clearProps: "transform" });
-      return undefined;
-    }
+    let disposed = false;
+    let cleanup: (() => void) | undefined;
 
-    const context = gsap.context(() => {
-      gsap.fromTo(chars,
-        { opacity: 0, yPercent: 112, scaleY: 1.7, scaleX: 0.82, transformOrigin: "50% 0%" },
-        {
-          opacity: 1,
-          yPercent: 0,
-          scaleY: 1,
-          scaleX: 1,
-          duration: animationDuration,
-          ease: "none",
-          stagger,
-          scrollTrigger: {
-            trigger: root,
-            start: scrollStart,
-            end: scrollEnd,
-            scrub: 0.9,
-            invalidateOnRefresh: true,
+    void Promise.all([import("gsap"), import("gsap/ScrollTrigger")]).then(([gsapModule, triggerModule]) => {
+      if (disposed) return;
+      const gsap = gsapModule.gsap ?? gsapModule.default;
+      const ScrollTrigger = triggerModule.ScrollTrigger ?? triggerModule.default;
+      gsap.registerPlugin(ScrollTrigger);
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        gsap.set(chars, { opacity: 1, yPercent: 0, scaleX: 1, scaleY: 1, clearProps: "transform" });
+        return;
+      }
+
+      const context = gsap.context(() => {
+        gsap.fromTo(chars,
+          { opacity: 0, yPercent: 112, scaleY: 1.7, scaleX: 0.82, transformOrigin: "50% 0%" },
+          {
+            opacity: 1,
+            yPercent: 0,
+            scaleY: 1,
+            scaleX: 1,
+            duration: animationDuration,
+            ease: "none",
+            stagger,
+            scrollTrigger: {
+              trigger: root,
+              start: scrollStart,
+              end: scrollEnd,
+              scrub: 0.9,
+              invalidateOnRefresh: true,
+            },
           },
-        },
-      );
-    }, root);
-    return () => context.revert();
+        );
+      }, root);
+      cleanup = () => context.revert();
+    }).catch(() => undefined);
+
+    return () => {
+      disposed = true;
+      cleanup?.();
+    };
   }, [animationDuration, ease, scrollEnd, scrollStart, stagger]);
 
   return (

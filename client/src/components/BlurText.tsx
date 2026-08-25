@@ -3,7 +3,7 @@
  * implemented with the existing Framer Motion dependency rather than adding a new library.
  */
 import { motion, useAnimationControls, useInView, useReducedMotion } from "framer-motion";
-import { useEffect, useMemo, useRef, type CSSProperties } from "react";
+import React, { useEffect, useMemo, useRef, type CSSProperties } from "react";
 
 type BlurTextProps = {
   text: string;

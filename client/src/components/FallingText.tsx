@@ -1,7 +1,7 @@
 /** Luminous Systems Atelier: pearl space, charcoal editorial contrast, Aurelis Gold depth, asymmetric plates, and calm pointer-responsive layers. */
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Matter from "matter-js";
-import "./FallingText.css";
+if (typeof window !== "undefined") void import("./FallingText.css");
 
 type FallingTextProps = {
   text: string;

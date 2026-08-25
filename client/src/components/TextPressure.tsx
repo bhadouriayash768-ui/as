@@ -1,6 +1,6 @@
 /** Luminous Systems Atelier: pearl space, charcoal editorial contrast, Aurelis Gold depth, asymmetric plates, and calm pointer-responsive layers. */
-import { CSSProperties, useEffect, useMemo, useRef, useState } from "react";
-import "./TextPressure.css";
+import React, { CSSProperties, useEffect, useMemo, useRef, useState } from "react";
+if (typeof window !== "undefined") void import("./TextPressure.css");
 
 type TextPressureProps = {
   text: string;
