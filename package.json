@@ -5,12 +5,13 @@
   "license": "MIT",
   "scripts": {
     "dev": "vite --host",
-    "build": "vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
-    "build:vercel": "VERCEL_STATIC_BUILD=1 vite build",
+    "build": "pnpm run build:vercel", 
+    "build:vercel": "VERCEL_STATIC_BUILD=1 vite build && pnpm run prerender",
     "start": "NODE_ENV=production node dist/index.js",
     "preview": "vite preview --host",
     "check": "tsc --noEmit",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "prerender": "tsx scripts/prerender.tsx"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
