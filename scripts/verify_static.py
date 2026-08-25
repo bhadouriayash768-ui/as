@@ -5,9 +5,9 @@ import re
 
 ROOT = Path(__file__).resolve().parents[1] / "vercel-dist"
 EXPECTED = [
-    "/", "/hvac-crm-software", "/hvac-scheduling-software", "/hvac-lead-management-software",
-    "/pricing", "/faq", "/blog", "/blog/reduce-no-shows-hvac-service-calls",
-    "/blog/choose-right-crm-growing-hvac-business", "/blog/hvac-lead-follow-up-workflow", "/contact",
+    "/", "/website-design-services", "/business-website-design", "/landing-page-design-services",
+    "/pricing", "/faq", "/blog", "/blog/what-makes-a-business-website-effective",
+    "/blog/how-to-improve-website-lead-generation", "/blog/website-redesign-vs-website-refresh", "/contact",
 ]
 
 class Parser(HTMLParser):
@@ -82,8 +82,8 @@ if not any(item.get("@type") == "FAQPage" for item in faq.jsonld):
 home = Parser()
 home.feed((ROOT / "index.html").read_text())
 types = {item.get("@type") for item in home.jsonld}
-if not {"Organization", "SoftwareApplication"}.issubset(types):
-    errors.append("homepage Organization or SoftwareApplication JSON-LD missing")
+if not {"ProfessionalService", "WebSite"}.issubset(types):
+    errors.append("homepage ProfessionalService or WebSite JSON-LD missing")
 
 if errors:
     print("FAIL")
