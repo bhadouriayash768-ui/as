@@ -4,5 +4,10 @@
   "outputDirectory": "vercel-dist",
   "installCommand": "pnpm install --frozen-lockfile",
   "cleanUrls": true,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "redirects": [
+    { "source": "/hvac-crm-software", "destination": "/website-design-services", "permanent": true },
+    { "source": "/hvac-scheduling-software", "destination": "/business-website-design", "permanent": true },
+    { "source": "/hvac-lead-management-software", "destination": "/landing-page-design-services", "permanent": true }
+  ]
 }
