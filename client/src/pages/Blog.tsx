@@ -1,0 +1,14 @@
+import React from "react";
+import { ArrowRight, Clock3 } from "lucide-react";
+import { Link } from "wouter";
+import { blogPosts, SITE } from "@shared/siteData";
+
+export function BlogIndex() {
+  return <div className="page-shell"><section className="page-hero"><div className="container narrow"><p className="eyebrow">HVAC BUSINESS RESOURCES</p><h1>Useful ideas for a business that keeps moving.</h1><p className="page-hero__lead">Practical guidance on HVAC CRM, scheduling, lead management, and the operating habits that help service teams grow with less friction.</p></div></section><section className="content-section"><div className="container"><div className="article-grid">{blogPosts.map((post) => <article className="article-card" key={post.slug}><div className="article-card__meta"><span>{post.category}</span><span><Clock3 size={14} />{post.readTime}</span></div><h2><Link href={`/blog/${post.slug}`}>{post.title}</Link></h2><p>{post.description}</p><Link href={`/blog/${post.slug}`} className="inline-link">Read article <ArrowRight size={16} /></Link></article>)}</div></div></section><section className="cta-band"><div className="container cta-band__inner"><div><p className="eyebrow">Put the ideas to work</p><h2>See a clearer workflow for your team.</h2></div><Link href="/contact" className="button button--light">Book a demo <ArrowRight size={17} /></Link></div></section></div>;
+}
+
+export function BlogPost({ slug }: { slug: string }) {
+  const post = blogPosts.find((item) => item.slug === slug);
+  if (!post) return null;
+  return <div className="page-shell"><section className="article-hero"><div className="container article-hero__inner"><Link href="/blog" className="back-link">← All resources</Link><p className="eyebrow">{post.category} · {post.readTime}</p><h1>{post.title}</h1><p className="article-hero__intro">{post.intro}</p><time dateTime={post.date}>{new Date(`${post.date}T12:00:00Z`).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</time></div></section><article className="article-body container">{post.sections.map(([heading, body]) => <section key={heading}><h2>{heading}</h2><p>{body}</p></section>)}<aside className="article-callout"><strong>Want to make the next step easier to manage?</strong><p>Syntha Airlabs helps HVAC teams connect customer context, scheduling, and follow-up in one practical workflow.</p><Link href="/contact" className="button button--primary">Start a conversation <ArrowRight size={17} /></Link></aside></article><div className="container related-links"><p className="eyebrow">Keep exploring</p><div>{blogPosts.filter((item) => item.slug !== slug).slice(0, 2).map((item) => <Link key={item.slug} href={`/blog/${item.slug}`}>{item.title}<ArrowRight size={16} /></Link>)}<Link href="/hvac-crm-software">Explore HVAC CRM software <ArrowRight size={16} /></Link></div></div></div>;
+}

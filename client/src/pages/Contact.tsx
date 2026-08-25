@@ -1,0 +1,8 @@
+import React from "react";
+import { ArrowUpRight, Mail, MapPin } from "lucide-react";
+import { Link } from "wouter";
+import { SITE } from "@shared/siteData";
+
+export default function Contact() {
+  return <div className="page-shell"><section className="page-hero page-hero--contact"><div className="container contact-grid"><div><p className="eyebrow">START A CONVERSATION</p><h1>Tell us where the workflow feels harder than it should.</h1><p className="page-hero__lead">Share a little about your HVAC business, the work you want to make clearer, and what you would like to improve next. We will use that context to make the first conversation useful.</p><a className="button button--light" href={`mailto:${SITE.email}?subject=Syntha%20Airlabs%20demo%20request`}>Email Syntha Airlabs <ArrowUpRight size={17} /></a></div><div className="contact-details"><div><Mail size={19} /><strong>Email</strong><a href={`mailto:${SITE.email}`}>{SITE.email}</a></div><div><MapPin size={19} /><strong>Built for distributed teams</strong><span>US · UK · Canada · Australia</span></div></div></div></section><section className="content-section"><div className="container contact-next"><div><p className="eyebrow">Before we talk</p><h2>Bring the real problem.</h2></div><div><p className="section-copy">Whether the issue is missed lead follow-up, scheduling gaps, or a customer journey that lives in too many places, start there. Syntha Airlabs is designed around the operational details that make a service business feel organized to its customers.</p><Link href="/faq" className="inline-link">Read the FAQs <ArrowUpRight size={16} /></Link></div></div></section></div>;
+}
