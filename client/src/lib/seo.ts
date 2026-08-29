@@ -27,9 +27,30 @@ export function getSeo(pathname: string): SeoMeta {
   return { title: "Page Not Found | Syntha Airlabs", description: "The requested Syntha Airlabs page could not be found.", path, noindex: true };
 }
 
+function breadcrumbFor(path: string, label: string): object {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE.origin },
+      { "@type": "ListItem", position: 2, name: label, item: `${SITE.origin}${path}` },
+    ],
+  };
+}
+
 export function getJsonLd(pathname: string): object[] {
   const path = pathname.split("?")[0].replace(/\/$/, "") || "/";
   const results: object[] = [];
+  const organization = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: SITE.name,
+    url: SITE.origin,
+    email: SITE.email,
+    logo: `${SITE.origin}${SITE.ogImage}`,
+    description: SITE.description,
+    ...(SITE.sameAs.length ? { sameAs: SITE.sameAs } : {}),
+  };
   if (path === "/") {
     results.push({
       "@context": "https://schema.org",
@@ -47,7 +68,11 @@ export function getJsonLd(pathname: string): object[] {
       name: SITE.name,
       url: SITE.origin,
       description: SITE.description,
+      publisher: { "@type": "Organization", name: SITE.name, url: SITE.origin },
     });
+    results.push(organization);
+  } else {
+    results.push(organization);
   }
   const landing = landingPages.find((page) => page.path === path);
   if (landing) {
@@ -60,6 +85,7 @@ export function getJsonLd(pathname: string): object[] {
       provider: { "@type": "Organization", name: SITE.name, url: SITE.origin },
       url: `${SITE.origin}${path}`,
     });
+    results.push(breadcrumbFor(path, landing.eyebrow));
   }
   if (path === "/faq") {
     results.push({
@@ -71,6 +97,16 @@ export function getJsonLd(pathname: string): object[] {
         acceptedAnswer: { "@type": "Answer", text: faq.answer },
       })),
     });
+    results.push(breadcrumbFor(path, "FAQ"));
+  }
+  if (path === "/pricing") {
+    results.push(breadcrumbFor(path, "Pricing"));
+  }
+  if (path === "/blog") {
+    results.push(breadcrumbFor(path, "Blog"));
+  }
+  if (path === "/contact") {
+    results.push(breadcrumbFor(path, "Contact"));
   }
   const post = blogPosts.find((item) => path === `/blog/${item.slug}`);
   if (post) {
@@ -81,19 +117,43 @@ export function getJsonLd(pathname: string): object[] {
       description: post.description,
       datePublished: post.date,
       dateModified: post.date,
+      image: `${SITE.origin}${SITE.ogImage}`,
       author: { "@type": "Organization", name: SITE.name, url: SITE.origin },
       publisher: { "@type": "Organization", name: SITE.name, url: SITE.origin },
       mainEntityOfPage: `${SITE.origin}${path}`,
+    });
+    results.push({
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home", item: SITE.origin },
+        { "@type": "ListItem", position: 2, name: "Blog", item: `${SITE.origin}/blog` },
+        { "@type": "ListItem", position: 3, name: post.title, item: `${SITE.origin}${path}` },
+      ],
     });
   }
   return results;
 }
 
+function setMeta(selector: string, attr: string, value: string) {
+  const el = document.querySelector(selector);
+  if (el) {
+    el.setAttribute(attr, value);
+  }
+}
+
 export function applySeo(meta: SeoMeta) {
   if (typeof document === "undefined") return;
   document.title = meta.title;
-  const description = document.querySelector('meta[name="description"]');
-  description?.setAttribute("content", meta.description);
-  const canonical = document.querySelector('link[rel="canonical"]');
-  canonical?.setAttribute("href", `${SITE.origin}${meta.path === "/" ? "/" : meta.path}`);
+  const canonicalUrl = `${SITE.origin}${meta.path === "/" ? "/" : meta.path}`;
+  const imageUrl = `${SITE.origin}${SITE.ogImage}`;
+  setMeta('meta[name="description"]', "content", meta.description);
+  setMeta('link[rel="canonical"]', "href", canonicalUrl);
+  setMeta('meta[property="og:title"]', "content", meta.title);
+  setMeta('meta[property="og:description"]', "content", meta.description);
+  setMeta('meta[property="og:url"]', "content", canonicalUrl);
+  setMeta('meta[property="og:image"]', "content", imageUrl);
+  setMeta('meta[name="twitter:title"]', "content", meta.title);
+  setMeta('meta[name="twitter:description"]', "content", meta.description);
+  setMeta('meta[name="twitter:image"]', "content", imageUrl);
 }

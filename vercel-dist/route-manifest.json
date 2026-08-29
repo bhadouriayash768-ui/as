@@ -1,0 +1,30 @@
+{
+  "publicPaths": [
+    "/",
+    "/website-design-services",
+    "/business-website-design",
+    "/landing-page-design-services",
+    "/pricing",
+    "/faq",
+    "/blog",
+    "/blog/what-makes-a-business-website-effective",
+    "/blog/how-to-improve-website-lead-generation",
+    "/blog/website-redesign-vs-website-refresh",
+    "/contact"
+  ],
+  "blogPosts": [
+    {
+      "slug": "what-makes-a-business-website-effective",
+      "title": "What Makes a Business Website Effective?"
+    },
+    {
+      "slug": "how-to-improve-website-lead-generation",
+      "title": "How to Improve Website Lead Generation Without More Noise"
+    },
+    {
+      "slug": "website-redesign-vs-website-refresh",
+      "title": "Website Redesign vs. Website Refresh: Where Should You Start?"
+    }
+  ],
+  "faqCount": 9
+}

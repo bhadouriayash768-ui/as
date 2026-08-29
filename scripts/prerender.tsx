@@ -17,6 +17,7 @@ function headFor(route: string) {
   const meta = getSeo(route);
   const canonical = `${SITE.origin}${meta.path === "/" ? "/" : meta.path}`;
   const robots = meta.noindex ? "noindex, follow" : "index, follow";
+  const imageUrl = `${SITE.origin}${SITE.ogImage}`;
   const tags = [
     `<title>${escapeHtml(meta.title)}</title>`,
     `<meta name="description" content="${escapeHtml(meta.description)}" />`,
@@ -27,9 +28,13 @@ function headFor(route: string) {
     `<meta property="og:description" content="${escapeHtml(meta.description)}" />`,
     `<meta property="og:url" content="${escapeHtml(canonical)}" />`,
     `<meta property="og:site_name" content="${escapeHtml(SITE.name)}" />`,
-    `<meta name="twitter:card" content="summary" />`,
+    `<meta property="og:image" content="${escapeHtml(imageUrl)}" />`,
+    `<meta property="og:image:width" content="1600" />`,
+    `<meta property="og:image:height" content="900" />`,
+    `<meta name="twitter:card" content="summary_large_image" />`,
     `<meta name="twitter:title" content="${escapeHtml(meta.title)}" />`,
     `<meta name="twitter:description" content="${escapeHtml(meta.description)}" />`,
+    `<meta name="twitter:image" content="${escapeHtml(imageUrl)}" />`,
     ...getJsonLd(route).map((item) => `<script type="application/ld+json">${JSON.stringify(item).replace(/</g, "\\u003c").replace(/>/g, "\\u003e").replace(/&/g, "\\u0026")}</script>`),
   ];
   return tags.join("\n    ");

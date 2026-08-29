@@ -4,6 +4,9 @@ export const SITE = {
   email: "synthaairlabs@gmail.com",
   description:
     "Syntha Airlabs designs clear, high-performing websites and digital foundations that help growing businesses look credible and make the next step easier.",
+  ogImage: "/guardian.webp",
+  // TODO: replace with real social profile URLs once available, e.g. LinkedIn/Instagram/X.
+  sameAs: [] as string[],
 };
 
 export type LandingPage = {
@@ -74,6 +77,10 @@ export const faqs = [
   { question: "Can you improve an existing website?", answer: "Yes. A project can start with a new website or with a focused review of an existing presence, including its message, page structure, responsive experience, and enquiry path." },
   { question: "Do you design landing pages for campaigns?", answer: "Yes. Landing pages can be shaped around a specific audience, offer, campaign, or enquiry goal, with a focused message and a clear next action." },
   { question: "How do I get started?", answer: "Send Syntha Airlabs a short note about your business, what you are trying to improve, and the kind of website or page you need. The first conversation is used to understand the useful next step." },
+  { question: "How much does a business website cost?", answer: "Pricing depends on the number of pages, the amount of original content needed, and whether the project is a new build or a focused improvement of an existing site. Syntha Airlabs shares a clear scope and price before any work begins." },
+  { question: "How long does a website project take?", answer: "A focused business website or landing page typically moves from kickoff to launch in a few weeks once the offer, structure, and content are agreed. Timelines are confirmed during the first conversation based on scope." },
+  { question: "Do you write the website copy or do I need to provide it?", answer: "Syntha Airlabs can shape and write the website copy, working from a short conversation about the business, or refine copy you already have. Either way, the goal is language that explains the offer clearly." },
+  { question: "Will my website work well on mobile devices?", answer: "Yes. Every website and landing page Syntha Airlabs builds is designed responsively, so the layout, navigation, and calls to action work cleanly across phones, tablets, and desktop screens." },
 ];
 
 export const blogPosts = [

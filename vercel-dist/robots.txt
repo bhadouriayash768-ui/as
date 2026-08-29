@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://synthaairlabs.vercel.app/sitemap.xml
